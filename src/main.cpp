@@ -1,8 +1,7 @@
+
 #include <Arduino.h>
 #include <EEPROM.h>
-
 #include <CRC16.h>
-
 
 #define BAUD_RATE 2400
 #define TEXT_SIZE 1000
@@ -11,8 +10,14 @@ uint8_t text_data[TEXT_SIZE];
 uint16_t text_index = 0;
 
 void storeDataToEEPROM(uint8_t data) {
-  EEPROM.update(text_index, data);
-  text_index++;
+  if (text_index < TEXT_SIZE) {
+    EEPROM.update(text_index, data);
+    text_index++;
+  } else {
+    // EEPROM is full, handle this case as needed
+    // For example, you could print an error message or take appropriate action
+    Serial.println("EEPROM is full!");
+  }
 }
 
 uint16_t calculateCRC16() {
